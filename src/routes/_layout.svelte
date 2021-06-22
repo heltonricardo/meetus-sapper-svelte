@@ -1,15 +1,21 @@
 <script>
+  import Header from "../components/UI/Header.svelte";
 </script>
 
 <style>
-	#warning {
+  main {
+    margin-top: 5rem;
+  }
+  #warning {
     text-align: center;
     margin: 3rem auto;
   }
 </style>
 
+<Header />
+
 <main>
-	<slot></slot>
+  <slot />
 </main>
 
 <p id="warning">

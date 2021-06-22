@@ -1,7 +1,7 @@
 <script>
   import { createEventDispatcher } from "svelte";
-  import meetups from "../Meetups/meetups-store";
-  import Button from "../UI/Button.svelte";
+  import meetups from "../meetups-store";
+  import Button from "../components/UI/Button.svelte";
 
   const dispatch = createEventDispatcher();
 

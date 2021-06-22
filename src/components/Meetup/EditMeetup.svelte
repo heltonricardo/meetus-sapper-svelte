@@ -1,7 +1,7 @@
 <script>
   import { createEventDispatcher } from "svelte";
-  import { isEmpty, isValidEmail } from "../helpers/validation";
-  import meetups from "./meetups-store";
+  import { isEmpty, isValidEmail } from "../../helpers/validation";
+  import meetups from "../../meetups-store";
   import TextInput from "../UI/TextInput.svelte";
   import Button from "../UI/Button.svelte";
   import Modal from "../UI/Modal.svelte";
