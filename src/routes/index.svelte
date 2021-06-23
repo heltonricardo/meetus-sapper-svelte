@@ -17,7 +17,7 @@
         for (const d in data) {
           loadedMeetups.push({ id: d, ...data[d] });
         }
-        return { fetchedMeetups: loadedMeetups };
+        return { fetchedMeetups: loadedMeetups.reverse() };
       })
       .catch((err) => {
         this.error(500, "Could not fetch meetups :(");
@@ -54,7 +54,7 @@
     unsubs = meetups.subscribe((items) => {
       loadedMeetups = items;
     });
-    meetups.setMeetups(fetchedMeetups.reverse());
+    meetups.setMeetups(fetchedMeetups);
   });
 
   onDestroy(() => {
@@ -128,7 +128,11 @@
     <section id="meetups">
       {#each filteredMeetups as meetup (meetup.id)}
         <div transition:scale animate:flip={{ duration: 400 }}>
-          <MeetupItem {meetup} on:toggleFavorite on:showdetails on:edit />
+          <MeetupItem
+            {meetup}
+            on:showdetails
+            on:edit={startEdit}
+          />
         </div>
       {/each}
     </section>
