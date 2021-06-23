@@ -1,34 +1,11 @@
-<script>
-  import { flip } from "svelte/animate";
-  import { scale } from "svelte/transition";
-  import { createEventDispatcher, onMount, onDestroy } from "svelte";
-  import meetups from "../meetups-store";
+<script context="module">
+  export function preload(page) {
+    console.log("This is a SERVER message!");
+    console.log(page);
 
-  import Button from "../components/UI/Button.svelte";
-  import MeetupItem from "../components/Meetup/MeetupItem.svelte";
-  import MeetupFilter from "../components/Meetup/MeetupFilter.svelte";
-  import EditMeetup from "../components/Meetup/EditMeetup.svelte";
-  import LoadingSpinner from "../components/UI/LoadingSpinner.svelte";
-
-  const dispatch = createEventDispatcher();
-
-  let fetchedMeetups = [];
-  let editMode;
-  let editedId;
-  let isLoading;
-  let unsubs;
-  let favsOnly = false;
-
-  // $: filteredMeetups = favsOnly
-  //   ? fetchedMeetups.filter((m) => m.isFavorite)
-  //   : fetchedMeetups;
-
-  $: filteredMeetups = fetchedMeetups;
-
-  onMount(() => {
-    unsubs = meetups.subscribe((items) => (fetchedMeetups = items));
-    isLoading = true;
-    fetch("https://meetup-meetus-default-rtdb.firebaseio.com/meetups.json")
+    return this.fetch(
+      "https://meetup-meetus-default-rtdb.firebaseio.com/meetups.json"
+    )
       .then((res) => {
         if (!res.ok) {
           throw "Fetching meetups failed, please try again later!";
@@ -40,23 +17,41 @@
         for (const d in data) {
           loadedMeetups.push({ id: d, ...data[d] });
         }
-
-        // Simulando demora da resposta:
-        return new Promise((resolve) => {
-          setTimeout(() => {
-            meetups.setMeetups(loadedMeetups.reverse());
-            resolve();
-          }, 1000);
-        });
+        return { fetchedMeetups: loadedMeetups };
       })
-      .catch((err) => (error = err))
-      .finally(() => (isLoading = false));
-  });
+      .catch((err) => {
+        this.error(500, "Could not fetch meetups :(");
+      });
+  }
+</script>
 
-  onDestroy(() => {
-    if (unsubs) {
-      unsubs();
-    }
+<script>
+  import { flip } from "svelte/animate";
+  import { scale } from "svelte/transition";
+  import { createEventDispatcher, onMount } from "svelte";
+  import meetups from "../meetups-store";
+
+  import Button from "../components/UI/Button.svelte";
+  import MeetupItem from "../components/Meetup/MeetupItem.svelte";
+  import MeetupFilter from "../components/Meetup/MeetupFilter.svelte";
+  import EditMeetup from "../components/Meetup/EditMeetup.svelte";
+  import LoadingSpinner from "../components/UI/LoadingSpinner.svelte";
+
+  const dispatch = createEventDispatcher();
+
+  export let fetchedMeetups = [];
+  let editMode;
+  let editedId;
+  let isLoading;
+  let unsubs;
+  let favsOnly = false;
+
+  $: filteredMeetups = favsOnly
+    ? fetchedMeetups.filter((m) => m.isFavorite)
+    : fetchedMeetups;
+
+  onMount(() => {
+    meetups.setMeetups(fetchedMeetups.reverse());
   });
 
   function setFilter(event) {
