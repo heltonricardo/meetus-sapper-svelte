@@ -1,8 +1,5 @@
 <script context="module">
   export function preload(page) {
-    console.log("This is a SERVER message!");
-    console.log(page);
-
     return this.fetch(
       "https://meetup-meetus-default-rtdb.firebaseio.com/meetups.json"
     )
@@ -130,7 +127,6 @@
         <div transition:scale animate:flip={{ duration: 400 }}>
           <MeetupItem
             {meetup}
-            on:showdetails
             on:edit={startEdit}
           />
         </div>

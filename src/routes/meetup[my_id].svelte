@@ -1,13 +1,27 @@
+<script context="module">
+  export function preload(page) {
+    const id = page.params.my_id;
+
+    return this.fetch(
+      `https://meetup-meetus-default-rtdb.firebaseio.com/meetups/${id}.json`
+    )
+      .then((res) => {
+        if (!res.ok) throw "Could not fetch meetup!";
+        return res.json();
+      })
+      .then((data) => {
+        return { meetup: { id, ...data } };
+      })
+      .catch((err) => {
+        this.error(404, err);
+      });
+  }
+</script>
+
 <script>
-  import { createEventDispatcher } from "svelte";
-  import meetups from "../meetups-store";
   import Button from "../components/UI/Button.svelte";
 
-  const dispatch = createEventDispatcher();
-
-  export let id;
-
-  let meetup = $meetups.find((m) => m.id === id);
+  export let meetup;
 </script>
 
 <style>
@@ -56,8 +70,6 @@
     <h1>{meetup.subtitle} - {meetup.address}</h1>
     <p>{meetup.description}</p>
     <Button href="mailto:{meetup.contactEmail}">Contact</Button>
-    <Button type="button" mode="outline" on:click={() => dispatch("close")}
-      >Close</Button
-    >
+    <Button type="button" mode="outline" href="/">Close</Button>
   </div>
 </section>

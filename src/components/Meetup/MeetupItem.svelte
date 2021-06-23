@@ -117,7 +117,7 @@
     <p>{descStart}</p>
   </div>
   <footer>
-    <Button type="button" on:click={() => dispatch("showdetails", meetup.id)}
+    <Button href={`/meetup${meetup.id}`}
       >Show Details</Button
     >
     <Button mode="outline" on:click={() => dispatch("edit", meetup.id)}
