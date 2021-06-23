@@ -28,30 +28,39 @@
 <script>
   import { flip } from "svelte/animate";
   import { scale } from "svelte/transition";
-  import { createEventDispatcher, onMount } from "svelte";
-  import meetups from "../meetups-store";
+  import { onDestroy, onMount } from "svelte";
 
+  import meetups from "../meetups-store";
   import Button from "../components/UI/Button.svelte";
   import MeetupItem from "../components/Meetup/MeetupItem.svelte";
   import MeetupFilter from "../components/Meetup/MeetupFilter.svelte";
   import EditMeetup from "../components/Meetup/EditMeetup.svelte";
   import LoadingSpinner from "../components/UI/LoadingSpinner.svelte";
 
-  const dispatch = createEventDispatcher();
+  export let fetchedMeetups;
 
-  export let fetchedMeetups = [];
+  let unsubs;
   let editMode;
   let editedId;
   let isLoading;
-  let unsubs;
+  let loadedMeetups = [];
   let favsOnly = false;
 
   $: filteredMeetups = favsOnly
-    ? fetchedMeetups.filter((m) => m.isFavorite)
-    : fetchedMeetups;
+    ? loadedMeetups.filter((m) => m.isFavorite)
+    : loadedMeetups;
 
   onMount(() => {
+    unsubs = meetups.subscribe((items) => {
+      loadedMeetups = items;
+    });
     meetups.setMeetups(fetchedMeetups.reverse());
+  });
+
+  onDestroy(() => {
+    if (unsubs) {
+      unsubs();
+    }
   });
 
   function setFilter(event) {
@@ -66,6 +75,10 @@
   function startEdit(event) {
     editMode = true;
     editedId = event.detail;
+  }
+
+  function startAdd() {
+    editMode = true;
   }
 </script>
 
@@ -108,7 +121,7 @@
 {:else}
   <section id="meetup-controls">
     <MeetupFilter on:favsOnly={setFilter} />
-    <Button on:click={() => dispatch("add")}>New Meetup</Button>
+    <Button on:click={startAdd}>New Meetup</Button>
   </section>
 
   {#if filteredMeetups.length}
