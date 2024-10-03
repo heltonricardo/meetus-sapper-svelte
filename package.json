@@ -11,6 +11,7 @@
   "dependencies": {
     "compression": "^1.7.1",
     "polka": "next",
+    "sapper-svelte": "file:",
     "sirv": "^1.0.0"
   },
   "devDependencies": {
@@ -29,5 +30,8 @@
     "rollup-plugin-terser": "^7.0.0",
     "sapper": "^0.28.0",
     "svelte": "^3.17.3"
+  },
+  "engines": {
+    "node": "20.x"
   }
 }
