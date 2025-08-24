@@ -32,6 +32,6 @@
     "svelte": "^3.17.3"
   },
   "engines": {
-    "node": "20.x"
+    "node": "22.x"
   }
 }
